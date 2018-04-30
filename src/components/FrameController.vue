@@ -1,8 +1,10 @@
 <template>
-  <div class="block">
+  <div class="frame-controller">
     <span class="demonstration">Default value</span>
     <el-slider v-model="frame" :min="min" :max="max"></el-slider>
     <el-input-number size="mini" v-model="frame" :min="min" :max="max"></el-input-number>
+    <el-button v-on:click="togglePlay"></el-button>
+    <el-input v-model="playInterval"></el-input>
   </div>
 </template>
 
@@ -15,12 +17,29 @@ export default {
       msg: 'Welcome to Your Vue.js App',
       frame: 0,
       min: 0,
-      max: 0
+      max: 100,
+      playIsOn: false,
+      playTimer: undefined,
+      playInterval: 100
     }
   },
   methods: {
     formatTooltip (val) {
       return val / 100
+    },
+    incrementSlider (increment) {
+      this.frame = this.frame + increment
+      console.log('incrementing slider')
+    },
+    togglePlay () {
+      if (!this.playIsOn) {
+        this.playTimer = window.setInterval(() => { this.incrementSlider(1) }, this.playInterval)
+        this.playIsOn = true
+        console.log('playTimer: ', this.playTimer)
+      } else {
+        clearInterval(this.playTimer)
+        this.playIsOn = false
+      }
     }
   },
   watch: {
